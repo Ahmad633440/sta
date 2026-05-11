@@ -3,34 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { playLowFreqSound } from "@/utils/sound";
+import { Typewriter } from "@/components/Typewriter";
 
-interface TerminalCardProps {
-  title: string;
-  dataPoints: { label: string; value: string }[];
-  description: string;
-  delay?: number;
-}
 
-const TypewriterText = ({ text, startTyping }: { text: string; startTyping: boolean }) => {
-  const [displayedText, setDisplayedText] = useState("");
-
-  useEffect(() => {
-    if (!startTyping) return;
-    
-    let i = 0;
-    const intervalId = setInterval(() => {
-      setDisplayedText(text.slice(0, i + 1));
-      i++;
-      if (i > text.length) {
-        clearInterval(intervalId);
-      }
-    }, 15); // Fast typing speed
-
-    return () => clearInterval(intervalId);
-  }, [text, startTyping]);
-
-  return <span>{displayedText}</span>;
-};
 
 export function TerminalCard({ title, dataPoints, description, delay = 0 }: TerminalCardProps) {
   const ref = useRef(null);
@@ -53,9 +28,9 @@ export function TerminalCard({ title, dataPoints, description, delay = 0 }: Term
       initial={{ opacity: 0, y: 100 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay }}
-      className="relative w-full max-w-2xl p-6 mb-12 border border-zinc-800 bg-black/50 backdrop-blur-md rounded-none overflow-hidden"
+      className="relative w-full max-w-2xl p-6 mb-10 border border-zinc-800 bg-black/50 backdrop-blur-md rounded-none overflow-hidden"
     >
-      {/* Decorative terminal corner blips */}
+
       <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-zinc-500"></div>
       <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-zinc-500"></div>
       <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-zinc-500"></div>
@@ -76,7 +51,7 @@ export function TerminalCard({ title, dataPoints, description, delay = 0 }: Term
             <div key={i} className="flex flex-col">
               <span className="text-xs text-zinc-500 uppercase tracking-widest">{dp.label}</span>
               <span className="text-sm text-zinc-300 font-medium">
-                {startTyping ? <TypewriterText text={dp.value} startTyping={true} /> : <span className="opacity-0">_</span>}
+                {startTyping ? <Typewriter text={dp.value} startTyping={true} /> : <span className="opacity-0">_</span>}
               </span>
             </div>
           ))}
@@ -86,7 +61,7 @@ export function TerminalCard({ title, dataPoints, description, delay = 0 }: Term
       <div className="text-sm text-zinc-400 leading-relaxed mt-4">
         {startTyping ? (
           <>
-            <TypewriterText text={description} startTyping={true} />
+            <Typewriter text={description} startTyping={true} />
             <motion.span
               animate={{ opacity: [1, 0] }}
               transition={{ repeat: Infinity, duration: 0.8 }}
