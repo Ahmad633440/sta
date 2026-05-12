@@ -1,27 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --color-terminal: #0f0f0f;
-  --color-terminal-border: #222;
+  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-display: 'Fredericka the Great', cursive;
+  --color-terminal: #1A1A1D;
+  --color-text: #DFD0B8;
+  --color-heading: #948979;
 }
 
 :root {
-  --background: #000000;
-  --foreground: #e4e4e7; /* zinc-200 */
+  --background: #1A1A1D;
+  --foreground: #DFD0B8;
+  --heading-color: #948979;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mono);
+  font-family: 'Space Mono', var(--font-mono);
   overflow-x: hidden;
   font-size: 14px;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: #948979;
+  font-family: 'Fredericka the Great', cursive;
+}
+
 ::selection {
-  background: #3f3f46;
-  color: #fff;
+  background: #948979;
+  color: #1A1A1D;
 }
 
 /* Custom minimalist scrollbar */
@@ -29,12 +37,12 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: #1A1A1D;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #948979;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #DFD0B8;
 }

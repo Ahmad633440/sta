@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-interface TypewriterProps {
-  text: string;
-  startTyping?: boolean;
-  speed?: number;
-  onComplete?: () => void;
-}
+
 
 export function Typewriter({ text, startTyping = true, speed = 15, onComplete }: TypewriterProps) {
   const [displayedText, setDisplayedText] = useState("");
