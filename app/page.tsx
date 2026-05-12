@@ -89,7 +89,7 @@ export default function Home() {
           className="font-display text-5xl md:text-7xl"
           style={{ color: '#948979', fontFamily: "'Fredericka the Great', cursive" }}
         >
-          GRAVITY'S DEBT
+          Stalker
         </h1>
       </motion.div>
 

@@ -1,107 +1,77 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { TerminalCard } from "@/components/TerminalCard";
+import React from "react";
+import { motion } from "motion/react";
+import Navbar from "@/components/Navbar";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { useRevealData } from "@/hooks/useRevealData";
+import { useSessionMetrics } from "@/hooks/useSessionMetrics";
+import { useVisibilityTracking } from "@/hooks/useVisibilityTracking";
 
-interface TechData {
-  ip: string;
-  location: string;
-  userAgent: string;
-  platform: string;
-  screenSize: string;
-  connection: string;
-}
+import LocationReveal from "@/components/revealSections/LocationReveal";
+import TimeReveal from "@/components/revealSections/TimeReveal";
+import TechReveal from "@/components/revealSections/TechReveal";
+import GPUReveal from "@/components/revealSections/GPUReveal";
+import BatteryReveal from "@/components/revealSections/BatteryReveal";
+import LanguageReveal from "@/components/revealSections/LanguageReveal";
+import PermissionsReveal from "@/components/revealSections/PermissionsReveal";
+import VisibilityReveal from "@/components/revealSections/VisibilityReveal";
+import ClosingReveal from "@/components/revealSections/ClosingReveal";
 
 export default function RevealPage() {
-  const [data, setData] = useState<TechData | null>(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Fetch IP and Location
-        const res = await fetch("https://ipapi.co/json/");
-        const ipData = await res.json();
-        
-        // Browser info
-        const ua = window.navigator.userAgent;
-        const platform = window.navigator.platform;
-        const screenSize = `${window.screen.width}x${window.screen.height}`;
-        const connection = (window.navigator as any).connection?.effectiveType || "Unknown";
-
-        setData({
-          ip: ipData.ip || "UNKNOWN",
-          location: `${ipData.city || "UNKNOWN"}, ${ipData.country_name || "UNKNOWN"}`,
-          userAgent: ua,
-          platform: platform,
-          screenSize: screenSize,
-          connection: connection.toUpperCase(),
-        });
-      } catch (err) {
-        console.error(err);
-        setData({
-          ip: "ERROR_FETCHING",
-          location: "UNKNOWN_ORIGIN",
-          userAgent: window.navigator.userAgent,
-          platform: window.navigator.platform,
-          screenSize: `${window.screen.width}x${window.screen.height}`,
-          connection: "OFFLINE",
-        });
-      }
-    }
-
-    fetchData();
-  }, []);
+  const { browser, location, loading } = useRevealData();
+  const { metrics } = useSessionMetrics();
+  const { visibility } = useVisibilityTracking();
 
   return (
-    <div className="relative min-h-screen bg-black text-zinc-300 font-mono overflow-x-hidden selection:bg-zinc-800 flex flex-col items-center py-24 px-6 md:px-12">
+    <div
+      className="relative min-h-screen font-mono overflow-x-hidden flex flex-col"
+      style={{ backgroundColor: "#1A1A1D", color: "#DFD0B8" }}
+    >
+      <Navbar />
       <BackgroundBeams />
 
-      <div className="z-10 w-full max-w-4xl flex flex-col items-center mt-12 pb-32">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-[0.2em] uppercase text-zinc-100 mb-4 animate-pulse">
-            Terminal Access Granted
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="z-10 w-full flex flex-col items-center py-32 px-6 md:px-12"
+      >
+        {/* Intro Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20 mt-16"
+        >
+          <h1
+            className="text-4xl md:text-6xl font-bold mb-4"
+            style={{ color: "#948979" }}
+          >
+            REVEAL
           </h1>
-          <p className="text-zinc-500 tracking-widest text-sm uppercase">
-            Surveillance Node Active • Anti-Gravity Protocol Engaged
+          <p style={{ color: "#DFD0B8" }} className="text-sm opacity-75">
+            What your browser just told us about you
           </p>
+        </motion.div>
+
+        {/* Data Sections */}
+        <div className="w-full max-w-3xl mx-auto space-y-12">
+          <LocationReveal location={location} loading={loading} />
+          <TimeReveal location={location} loading={loading} />
+          <TechReveal browser={browser} loading={loading} />
+          <GPUReveal browser={browser} loading={loading} />
+          <BatteryReveal browser={browser} loading={loading} />
+          <LanguageReveal browser={browser} loading={loading} />
+          <PermissionsReveal browser={browser} loading={loading} />
+          <VisibilityReveal metrics={metrics} visibility={visibility} />
+          <ClosingReveal />
         </div>
 
-        <TerminalCard
-          title="IDENTITY & ORIGIN"
-          dataPoints={[
-            { label: "IP Address", value: data?.ip || "SCANNING..." },
-            { label: "Physical Location", value: data?.location || "TRIANGULATING..." },
-          ]}
-          description="Subject identified in real space. Tracing routing packets across orbital satellites. The grid is aware of your presence."
-          delay={0.2}
-        />
-
-        {/* Spacer to force scrolling */}
-        <div className="h-[30vh]" />
-
-        <TerminalCard
-          title="HARDWARE & SPECIFICATIONS"
-          dataPoints={[
-            { label: "Platform", value: data?.platform || "DETECTING..." },
-            { label: "Screen Resolution", value: data?.screenSize || "MEASURING..." },
-            { label: "Connection", value: data?.connection || "TESTING..." },
-          ]}
-          description="Monitoring localized gravity wells and device parameters. System footprint recorded. Visual interfaces bounded by physical screen constraints."
-          delay={0.2}
-        />
-
-        <div className="h-[30vh]" />
-
-        <TerminalCard
-          title="SOFTWARE FOOTPRINT"
-          dataPoints={[
-            { label: "User Agent", value: data?.userAgent || "ANALYZING..." },
-          ]}
-          description="Digital fingerprint acquired. The browser transparency initiative has successfully compromised anonymity vectors. We see you."
-          delay={0.2}
-        />
-      </div>
+        {/* Spacer */}
+        <div className="h-32" />
+      </motion.div>
     </div>
   );
 }
